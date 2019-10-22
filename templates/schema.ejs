@@ -1,0 +1,39 @@
+
+type Mutation {
+  <%_ types.forEach(function(type){ _%>
+  create<%= type.name %>(input: Create<%= type.name %>Input!): <%= type.name %>
+  update<%= type.name %>(id: ID!, input: Update<%= type.name %>Input!): <%= type.name %>
+  delete<%= type.name %>(id: ID!): Boolean
+  <%_ }); _%>
+}
+
+type Query {
+  <%_ types.forEach(function(type){ _%>
+  get<%= type["name"] %>(id: ID!): <%= type["name"] %>
+  get<%= type["name"] %>s: [<%= type["name"] %>!]
+  <%_ }); _%>
+}
+
+<%_ types.forEach(function(type){ _%>
+input Create<%= type["name"] %>Input {
+  <%_ type["fields"].forEach(function(field){ _%>
+  <%= field["name"] %>: <%= field["type"] %><%= field["required"] ? "!" : "" %>
+  <%_ }); _%>
+}
+
+input Update<%= type["name"] %>Input {
+  <%_ type["fields"].forEach(function(field){ _%>
+  <%= field["name"] %>: <%= field["type"] %>
+  <%_ }); _%>
+}
+<%_ }); _%>
+
+<%_ types.forEach(function(type){ _%>
+type <%= type["name"] %> {
+  id: ID!
+  <%_ type["fields"].forEach(function(field){ _%>
+  <%= field["name"] %>: <%= field["type"] %><%= field["required"] ? "!" : "" %>
+  <%_ }); _%>
+}
+<%_ }); _%>
+
