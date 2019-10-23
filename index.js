@@ -27,5 +27,16 @@ program
         generateResolver(options.config, options.output);
     });
 
+program
+    .command("codegen:app")
+    .alias("a")
+    .description("Generate graphql schema and resolvers")
+    .option("-c, --config <path>", "Path to config file", "config.yaml")
+    .option("-s, --soutput <path>", "Path to store output schema file", "schema.graphql")
+    .option("-r, --routput <path>", "Path to store output resolver file", "resolvers.js")
+    .action(options => {
+        generateSchema(options.config, options.soutput);
+        generateResolver(options.config, options.routput);
+    });
 
 program.parse(process.argv);
