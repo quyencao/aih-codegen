@@ -1,4 +1,4 @@
-# AIH CODEGEN
+# Aih Codegen
 
 Generate graphql schema and resolver code
 
