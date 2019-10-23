@@ -16,9 +16,9 @@ $ aih --help
 ```
 
 # Commands
-* [`aih codegen:schema`](#aih-codegen-schema)
-* [`aih codegen:resolver`](#aih-codegen-resolver)
-* [`aih codegen:app`](#aih-codegen-app)
+* [`aih codegen:schema`](#aih-codegenschema)
+* [`aih codegen:resolver`](#aih-codegenresolver)
+* [`aih codegen:app`](#aih-codegenapp)
 
 ## `aih codegen:schema`
 Generate schema
