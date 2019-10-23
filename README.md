@@ -10,7 +10,7 @@ running command...
 $ aih (-V|--version)
 0.0.1
 $ aih --help
-  Usage: aih [options] [command]
+  Usage: aih [command] [options]
   Generate graphql code
 ...
 ```
@@ -33,7 +33,7 @@ OPTIONS
 ```
 
 ## `aih codegen:resolver`
-Generate schema
+Generate resolver
 
 ```
 USAGE
