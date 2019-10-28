@@ -12,7 +12,7 @@ program
     .alias("s")
     .description("Generate graphql schema")
     .option("-c, --config <path>", "Path to config file", "config.yaml")
-    .option("-o, --output <path>", "Path to store output file", "schema.graphql")
+    .option("-o, --output <path>", "Path to store output file", "schema.js")
     .action(options => {
         generateSchema(options.config, options.output);
     });
@@ -32,7 +32,7 @@ program
     .alias("a")
     .description("Generate graphql schema and resolvers")
     .option("-c, --config <path>", "Path to config file", "config.yaml")
-    .option("-s, --soutput <path>", "Path to store output schema file", "schema.graphql")
+    .option("-s, --soutput <path>", "Path to store output schema file", "schema.js")
     .option("-r, --routput <path>", "Path to store output resolver file", "resolvers.js")
     .action(options => {
         generateSchema(options.config, options.soutput);

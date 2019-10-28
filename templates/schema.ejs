@@ -1,4 +1,6 @@
+const { gql } = require("apollo-server-lambda");
 
+const typeDefs = gql`
 type Mutation {
   <%_ types.forEach(function(type){ _%>
   create<%= type.name %>(input: Create<%= type.name %>Input!): <%= type.name %>
@@ -36,4 +38,6 @@ type <%= type["name"] %> {
   <%_ }); _%>
 }
 <%_ }); _%>
+`;
 
+module.exports = typeDefs;
