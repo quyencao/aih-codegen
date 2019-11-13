@@ -10,9 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "commander": "^3.0.2",
-    "ejs": "^2.7.1",
-    "yaml": "^1.7.2"
+    "graphql": "^14.5.8",
+    "inquirer-directory": "^2.2.0",
+    "node-fetch": "^2.6.0",
+    "node-plop": "^0.23.0",
+    "plop-pack-fancy-comments": "^0.2.1",
+    "yaml": "^1.7.2",
+    "yargs": "^14.2.0"
   },
   "bin": {
     "aih": "index.js"

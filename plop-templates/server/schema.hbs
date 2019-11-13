@@ -1,0 +1,45 @@
+const { gql } = require("apollo-server-lambda");
+
+const typeDefs = gql`
+type Mutation {
+  {{#each types}}
+  create{{this.name}}(input: Create{{this.name}}Input!): {{this.name}}
+  update{{this.name}}(id: ID!, input: Update{{this.name}}Input!): {{this.name}}
+  delete{{this.name}}(id: ID!): Boolean
+  {{/each}}
+}
+
+type Query {
+  {{#each types}}
+  get{{this.name}}(id: ID!): {{this.name}}
+  get{{this.name}}s: [{{this.name}}!]
+  {{/each}}
+}
+
+{{#each types}}
+input Create{{this.name}}Input {
+  {{#each this.fields}}
+  {{this.name}}: {{this.type}}{{#if this.required}}!{{/if}}
+  {{/each}}
+}
+
+input Update{{this.name}}Input {
+  {{#each this.fields}}
+  {{this.name}}: {{this.type}}
+  {{/each}}
+}
+
+{{/each}}
+
+{{#each types}}
+type {{this.name}} {
+  id: ID!
+  {{#each this.fields}}
+  {{this.name}}: {{this.type}}{{#if this.required}}!{{/if}}
+  {{/each}}
+}
+
+{{/each}}
+`;
+
+module.exports = typeDefs;
