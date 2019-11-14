@@ -141,6 +141,27 @@ module.exports = function(plop) {
     });
   });
 
+  plop.setActionType("generateSchemaJson", function(data, config, plop) {
+    return new Promise((resolve, reject) => {
+        fetch(data.endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: introspectionQuery })
+        })
+        .then(res => res.json())
+        .then(res => {
+            return addFile(Object.assign({}, data, { schema: JSON.stringify(res.data, null, 2) }), config, plop);
+        })
+        .then(() => {
+            resolve("Done!");
+        })
+        .catch(err => {
+            console.log(err);
+            reject('Error! Try again')
+        });
+    });
+  });
+
   plop.setGenerator('react:connect', {
     description: 'Generate React Component to connect Graphql',
     prompts: [{
@@ -286,6 +307,35 @@ module.exports = function(plop) {
             type: 'generateMutation',
             path: 'graphql/mutations/{{properCase gql_type}}.vue',
             templateFile: 'plop-templates/vue/Mutation.hbs',
+            force: true
+        },
+    ]
+  });
+
+  plop.setGenerator("android:app", {
+    description: "Generate graphql for android",
+    prompts: [{
+        type: 'input',
+        name: 'endpoint',
+        message: 'Enter graphql endpoint'
+    }],
+    actions: [
+        {
+            type: 'add',
+            path: 'java/com/apollographql/apollo/client/GraphqlClient.java',
+            templateFile: 'plop-templates/android/GraphqlClient.hbs',
+            force: true
+        },
+        {
+            type: 'generateSchemaJson',
+            path: 'graphql/com/apollographql/apollo/api/schema.json',
+            templateFile: 'plop-templates/android/schema.hbs',
+            force: true
+        },
+        {
+            type: 'generateGql',
+            path: 'graphql/com/apollographql/apollo/api/{{properCase gql_type}}.graphql',
+            templateFile: 'plop-templates/android/Graphql.hbs',
             force: true
         },
     ]

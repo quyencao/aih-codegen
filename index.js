@@ -164,6 +164,30 @@ argv
                 .catch(err => console.error(err));
         }
     })
+    .command({
+        command: "client:android [options]", 
+        aliases: ["ca"],
+        desc: "Generate Android code for Graphql", 
+        builder: (yargs) => {
+            return yargs.option("endpoint", {
+                alias: "e",
+                describe: "Graphql endpoint",
+                type: "string",
+                nargs: 1,
+                demand: "Endpoint is required"
+            })
+        },
+        handler: (argv) => {
+            const androidGenerator = plop.getGenerator("android:app");
+
+            androidGenerator
+                .runActions({ endpoint: argv.endpoint })
+                .then(() => {
+                    console.log("Done!");
+                })
+                .catch(err => console.error(err));
+        }
+    })
     .help("help")
     .alias("help", "h")
     .version()
