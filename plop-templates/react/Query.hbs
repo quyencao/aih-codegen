@@ -6,7 +6,7 @@ const {{constantCase gql_type}} = gql`
     {{gql}}
 `;
 
-function {{properCase gql_type}}() {
+function {{properCase gql_type}}(props) {
     const { loading, error, data } = useQuery({{constantCase gql_type}});
 
     if (loading) {

@@ -6,7 +6,7 @@ const {{constantCase gql_type}} = gql`
     {{gql}}
 `;
 
-function {{properCase gql_type}}() {
+function {{properCase gql_type}}(props) {
     const [{{camelCase gql_type}}, { data }] = useMutation({{constantCase gql_type}});
 
     return (
