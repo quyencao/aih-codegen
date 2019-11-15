@@ -1,0 +1,8 @@
+'use strict'
+module.exports = (sequelize, DataTypes) => {
+  const {{{ ModelName }}} = sequelize.define('{{{ TableName }}}', {{{ Fields }}}, {})
+  {{{ ModelName }}}.associate = function(models) {
+    // associations can be defined here
+  }
+  return {{{ ModelName }}}
+}

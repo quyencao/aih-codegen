@@ -1,30 +1,79 @@
-tables:
-  - todosTable
-  - usersTable
-
-types:
-  - name: Todo
-    ref: todosTable
-    fields:
-      - name: text
-        type: String
-        required: true
-      - name: completed
-        type: Boolean
-        required: false
-
-  - name: User
-    ref: usersTable
-    fields:
-      - name: username
-        type: String
-        required: true
-      - name: email
-        type: String
-        required: true
-      - name: desc
-        type: String
-        required: false
-      - name: password
-        type: String
-        required: true
+answers:
+  fields:
+    - id:
+        type: serial
+        unique: true
+        not_null: true
+    - content:
+        type: text
+        unique: false
+        not_null: true
+    - created_by:
+        type: int
+        unique: true
+        not_null: true
+    - question:
+        type: int
+        unique: true
+        not_null: true
+    - created_at:
+        type: timestamp
+        unique: false
+        not_null: true
+  primary_keys:
+    - id
+  foreign_keys:
+    - created_by:
+        ref_table: users
+        ref_field: id
+    - question:
+        ref_table: questions
+        ref_field: id
+questions:
+  fields:
+    - id:
+        type: serial
+        unique: true
+        not_null: true
+    - content:
+        type: text
+        unique: false
+        not_null: true
+    - created_by:
+        type: serial
+        unique: true
+        not_null: true
+    - created_at:
+        type: timestamp
+        unique: false
+        not_null: true
+  primary_keys:
+    - id
+  foreign_keys:
+    - created_by:
+        ref_table: users
+        ref_field: id
+users:
+  fields:
+    - id:
+        type: serial
+        unique: true
+        not_null: true
+    - username:
+        type: text
+        unique: true
+        not_null: true
+    - password:
+        type: text
+        unique: false
+        not_null: true
+    - name:
+        type: text
+        unique: false
+        not_null: true
+    - birth_day:
+        type: timestamp
+        unique: false
+        not_null: false
+  primary_keys:
+    - id

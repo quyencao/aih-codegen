@@ -5,6 +5,9 @@ const { buildClientSchema, introspectionQuery } = require("graphql");
 const fetch = require('node-fetch');
 const addFile = require("node-plop/lib/actions/add").default;
 const { generateQuery, getVarsToTypesStr } = require("./helpers");
+const { readConfiguration } = require("./helpers/db");
+const Model = require("./helpers/generators/model");
+const Database = require("./helpers/generators/database");
 
 module.exports = function(plop) {
 
@@ -434,6 +437,121 @@ module.exports = function(plop) {
                 force: true
             }
         ]
+    }
+  });
+
+  plop.setGenerator("db:model", {
+      description: "Generate model",
+      prompts: [
+          {
+              type: "input",
+              name: "config_path",
+              message: "Path to config file"
+          }
+      ],
+      actions: function(data) {
+        let actions = [
+            {
+                type: "add",
+                path: "generated/models/index.js",
+                templateFile: "plop-templates/rds/index.hbs",
+                force: true
+            }
+        ];
+
+        const config_data = readConfiguration(data.config_path);
+    
+        Object.keys(config_data).map(table_name => {
+            const table_configs = config_data[table_name];
+            const model = new Model(table_name, table_configs);
+
+            actions.push({
+                type: "add",
+                path: `generated/models/${table_name}.js`,
+                templateFile: "plop-templates/rds/model.hbs",
+                data: model.getModelData(),
+                force: true
+            })
+        });
+
+        return actions; 
+      }
+  });
+
+  plop.setGenerator("db:table", {
+    description: "Generate created table script",
+    prompts: [
+        {
+            type: "input",
+            name: "config_path",
+            message: "Path to config file"
+        }
+    ],
+    actions: function(data) {
+        const config_data = readConfiguration(data.config_path);
+        const database = new Database(config_data);
+
+        return [
+            {
+                type: "add",
+                path: "generated/create_table.txt",
+                templateFile: "plop-templates/rds/create_table.hbs",
+                data: {
+                    table: database.getGenerateScriptForCreateAllTable()
+                },
+                force: true
+            }
+        ]
+    }
+  });
+
+  plop.setGenerator("db:all", {
+    description: "Generate model and created table script",
+    prompts: [
+        {
+            type: "input",
+            name: "config_path",
+            message: "Path to config file"
+        }
+    ],
+    actions: function(data) {
+        const config_data = readConfiguration(data.config_path);
+
+        let actions = [
+            {
+                type: "add",
+                path: "generated/models/index.js",
+                templateFile: "plop-templates/rds/index.hbs",
+                force: true
+            }
+        ];
+    
+        Object.keys(config_data).map(table_name => {
+            const table_configs = config_data[table_name];
+            const model = new Model(table_name, table_configs);
+
+            actions.push({
+                type: "add",
+                path: `generated/models/${table_name}.js`,
+                templateFile: "plop-templates/rds/model.hbs",
+                data: model.getModelData(),
+                force: true
+            })
+        });
+
+        const database = new Database(config_data);
+
+        actions.push({
+            type: "add",
+            path: "generated/create_table.txt",
+            templateFile: "plop-templates/rds/create_table.hbs",
+            data: {
+                table: database.getGenerateScriptForCreateAllTable()
+            },
+            force: true
+        });
+
+        return actions;
     }
   });
 };
