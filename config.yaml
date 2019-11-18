@@ -1,79 +1,28 @@
-answers:
-  fields:
-    - id:
-        type: serial
-        unique: true
-        not_null: true
-    - content:
-        type: text
-        unique: false
-        not_null: true
-    - created_by:
-        type: int
-        unique: true
-        not_null: true
-    - question:
-        type: int
-        unique: true
-        not_null: true
-    - created_at:
-        type: timestamp
-        unique: false
-        not_null: true
-  primary_keys:
-    - id
-  foreign_keys:
-    - created_by:
-        ref_table: users
-        ref_field: id
-    - question:
-        ref_table: questions
-        ref_field: id
-questions:
-  fields:
-    - id:
-        type: serial
-        unique: true
-        not_null: true
-    - content:
-        type: text
-        unique: false
-        not_null: true
-    - created_by:
-        type: serial
-        unique: true
-        not_null: true
-    - created_at:
-        type: timestamp
-        unique: false
-        not_null: true
-  primary_keys:
-    - id
-  foreign_keys:
-    - created_by:
-        ref_table: users
-        ref_field: id
-users:
-  fields:
-    - id:
-        type: serial
-        unique: true
-        not_null: true
-    - username:
-        type: text
-        unique: true
-        not_null: true
-    - password:
-        type: text
-        unique: false
-        not_null: true
-    - name:
-        type: text
-        unique: false
-        not_null: true
-    - birth_day:
-        type: timestamp
-        unique: false
-        not_null: false
-  primary_keys:
-    - id
+tables:
+  todos:
+    fields:
+      - id:
+          type: serial
+          unique: true
+          not_null: true
+      - text:
+          type: text
+          unique: true
+          not_null: true
+      - completed:
+          type: bool
+          unique: false
+          not_null: true
+    primary_keys:
+      - id
+
+types:
+  - name: Todo
+    ref: todos
+    fields:
+      - name: text
+        type: String
+        required: true
+      - name: completed
+        type: Boolean
+        required: false

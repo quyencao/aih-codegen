@@ -1,42 +1,61 @@
-const db = require('./db');
+const db = require('./models');
 
 const resolver = {
     Query: {
         {{#each types}}
         get{{this.name}}: (_, args) => {
-            return db.getTable("{{this.ref}}").getRecordById(args.id).then(data => {
-                return data.Item
-            }).catch(err => null);
+            return db.{{this.ref}}.findByPk(args.id)
+                .then(data => {
+                    return data.dataValues;
+                })
+                .catch(err => {
+                    throw err;
+                });
         },
         get{{this.name}}s: (_, args) => {
-            return  db.getTable("{{this.ref}}").getRecords({}).then(data => {
-                return data.Items
-            }).catch(err => null);
-        },
+            return db.{{this.ref}}.findAll()
+                        .then(items => {
+                            return items.map(item => item.dataValues);
+                        })
+                        .catch(err => {
+                            throw err;
+                        });
+        }
         {{/each}}
     },
     Mutation: {
         {{#each types}}
         create{{this.name}}: (_, args) => {
-            return db.getTable("{{this.ref}}")
-            .insertRecord(args.input)
-            .then(data => data)
+            return db.{{this.ref}}.create(args.input)
+                .then(data => {
+                    return data.dataValues;
+                })
+                .catch(err => {
+                    throw err;
+                });
+        },
+        update{{this.name}}: (_, args) => {
+            return db.{{this.ref}}.update(args.input, { return: true, where: { id: args.id } })
+                .then(() => {
+                    return db.{{this.ref}}.findByPk(args.id);
+                })
+                .then(data => {
+                    return data.dataValues;
+                })
+                .catch(err => {
+                    throw err;
+                });
+        },
+        delete{{this.name}}: (_, args) => {
+            return db.{{this.ref}}.destroy({
+                where: { id: args.id }
+            }).then(data => {
+                return data > 0;
+            })
             .catch(err => {
                 throw err;
             })
-        },
-        delete{{this.name}}: (_, args) => {
-            return db.getTable("{{this.ref}}")
-                .deleteRecordById(args.id)
-                .then(data => true)
-                .catch(err => false);
-        },
-        update{{this.name}}: (_, args) => {
-            return db.getTable("{{this.ref}}")
-                .updateRecordById(args.id, args.input)
-                .then(data => data.Attributes)
-                .catch(err => null);
-        },
+        }
         {{/each}}
     }
 }

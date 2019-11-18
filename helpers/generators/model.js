@@ -11,8 +11,8 @@ class Model {
     }
 
     _getModelData(table_name, model_configs) {
-        const { fields } = model_configs
-        const obj_fields = this._getObjFields(fields)
+        const { fields, primary_keys } = model_configs
+        const obj_fields = this._getObjFields(fields, primary_keys)
         const model_name = this._getModelNameFromTableName(table_name)
         const result = {
             TableName: table_name,
@@ -32,28 +32,34 @@ class Model {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    _getObjFields(fields) {
+    _getObjFields(fields, primary_keys) {
         const result = {}
         fields.forEach(field => {
             const field_name = Object.keys(field).shift()
             const field_configs = field[field_name]
-            const obj_field = this._getObjField(field_name, field_configs)
+            const is_primary = primary_keys.includes(field_name)
+            const obj_field = this._getObjField(field_name, field_configs, is_primary)
             Object.assign(result, obj_field)
         })
 
         return result
     }
 
-    _getObjField(name, configs) {
+    _getObjField(name, configs, is_primary) {
         const { type, not_null } = configs
         const sequelize_type = this._convertPGTypeToSequelizeType(type)
-        return {
+        const data = {
             [name]: {
                 type: sequelize_type,
-                AllowNull: !not_null
-            },
-            
+                allowNull: !not_null,
+            }
         }
+
+        if (is_primary) {
+            data[name].primaryKey = true
+        }
+
+        return data
     }
 
     _convertPGTypeToSequelizeType(pg_type) {
@@ -64,6 +70,8 @@ class Model {
                 return "DataTypes.TEXT"
             case "int":
                 return "DataTypes.INTEGER"
+            case "bool":
+                return "DataTypes.BOOLEAN"
             case "timestamp":
                 return "DataTypes.TIME"
             default:
