@@ -453,7 +453,7 @@ module.exports = function(plop) {
         let actions = [
             {
                 type: "add",
-                path: "generated/models/index.js",
+                path: "models/index.js",
                 templateFile: "plop-templates/rds/index.hbs",
                 force: true
             }
@@ -467,7 +467,7 @@ module.exports = function(plop) {
 
             actions.push({
                 type: "add",
-                path: `generated/models/${table_name}.js`,
+                path: `models/${table_name}.js`,
                 templateFile: "plop-templates/rds/model.hbs",
                 data: model.getModelData(),
                 force: true
@@ -494,7 +494,7 @@ module.exports = function(plop) {
         return [
             {
                 type: "add",
-                path: "generated/create_table.txt",
+                path: "models/create_table.txt",
                 templateFile: "plop-templates/rds/create_table.hbs",
                 data: {
                     table: database.getGenerateScriptForCreateAllTable()
@@ -520,7 +520,7 @@ module.exports = function(plop) {
         let actions = [
             {
                 type: "add",
-                path: "generated/models/index.js",
+                path: "models/index.js",
                 templateFile: "plop-templates/rds/index.hbs",
                 force: true
             }
@@ -532,7 +532,7 @@ module.exports = function(plop) {
 
             actions.push({
                 type: "add",
-                path: `generated/models/${table_name}.js`,
+                path: `models/${table_name}.js`,
                 templateFile: "plop-templates/rds/model.hbs",
                 data: model.getModelData(),
                 force: true
@@ -543,7 +543,7 @@ module.exports = function(plop) {
 
         actions.push({
             type: "add",
-            path: "generated/create_table.txt",
+            path: "models/create_table.txt",
             templateFile: "plop-templates/rds/create_table.hbs",
             data: {
                 table: database.getGenerateScriptForCreateAllTable()
