@@ -57,6 +57,7 @@ class Model {
 
         if (is_primary) {
             data[name].primaryKey = true
+            data[name].autoIncrement = true
         }
 
         return data
