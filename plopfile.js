@@ -344,6 +344,35 @@ module.exports = function(plop) {
     ]
   });
 
+  plop.setGenerator("ios:app", {
+    description: "Generate ios code for Graphql",
+    prompts: [{
+        type: 'input',
+        name: 'endpoint',
+        message: 'Enter graphql endpoint'
+    }],
+    actions: [
+        {
+            type: 'add',
+            path: 'GraphqlClient.swift',
+            templateFile: 'plop-templates/ios/GraphqlClient.hbs',
+            force: true
+        },
+        {
+            type: 'generateSchemaJson',
+            path: 'schema.json',
+            templateFile: 'plop-templates/ios/schema.hbs',
+            force: true
+        },
+        {
+            type: 'generateGql',
+            path: 'graphql/{{properCase gql_type}}.graphql',
+            templateFile: 'plop-templates/ios/Graphql.hbs',
+            force: true
+        },
+    ]
+  });
+
   plop.setGenerator("codegen:schema", {
     description: "Generate grahql schema",
     prompts: [

@@ -190,6 +190,30 @@ argv
         }
     })
     .command({
+        command: "client:ios [options]", 
+        aliases: ["ci"],
+        desc: "Generate Ios code for Graphql", 
+        builder: (yargs) => {
+            return yargs.option("endpoint", {
+                alias: "e",
+                describe: "Graphql endpoint",
+                type: "string",
+                nargs: 1,
+                demand: "Endpoint is required"
+            })
+        },
+        handler: (argv) => {
+            const iosGenerator = plop.getGenerator("ios:app");
+
+            iosGenerator
+                .runActions({ endpoint: argv.endpoint })
+                .then(() => {
+                    console.log("Done!");
+                })
+                .catch(err => console.error(err));
+        }
+    })
+    .command({
         command: "db:model [options]",
         aliases: ["gm"],
         desc: "Generate sequelize model",

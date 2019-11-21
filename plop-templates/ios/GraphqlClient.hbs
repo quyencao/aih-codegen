@@ -1,0 +1,7 @@
+import Apollo
+
+class GraphqlClient {
+  static let shared = GraphqlClient() 
+    
+  private(set) lazy var apollo = ApolloClient(url: URL(string: "{{endpoint}}")!)
+}
