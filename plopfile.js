@@ -450,7 +450,7 @@ module.exports = function(plop) {
     ],
     actions: function(data) {
         const doc = yaml.parse(fs.readFileSync(data.config, "utf8"));
-        return [
+        const actions = [
             {
                 type: "add",
                 path: data.soutput,
@@ -464,8 +464,31 @@ module.exports = function(plop) {
                 templateFile: 'plop-templates/server/resolvers.hbs',
                 data: { types: doc.types },
                 force: true
+            },
+            {
+                type: "add",
+                path: "models/index.js",
+                templateFile: "plop-templates/rds/index.hbs",
+                force: true
             }
-        ]
+        ];
+
+        const config_data = readConfiguration(data.config);
+    
+        Object.keys(config_data).map(table_name => {
+            const table_configs = config_data[table_name];
+            const model = new Model(table_name, table_configs);
+
+            actions.push({
+                type: "add",
+                path: `models/${table_name}.js`,
+                templateFile: "plop-templates/rds/model.hbs",
+                data: model.getModelData(),
+                force: true
+            })
+        });
+
+        return actions; 
     }
   });
 
