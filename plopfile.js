@@ -11,6 +11,8 @@ const Database = require("./helpers/generators/database");
 
 module.exports = function(plop) {
 
+  plop.setHelper('uppercase', txt => txt.toUpperCase());
+
   plop.setActionType('generateQuery', function (data, config, plop) {
         return new Promise((resolve, reject) => {
             fetch(data.endpoint, {

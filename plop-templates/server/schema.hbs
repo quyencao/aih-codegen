@@ -16,6 +16,14 @@ type Query {
   {{/each}}
 }
 
+type Subscription {
+  {{#each types}}
+  create{{this.name}}: {{this.name}}SubscriptionPayload!
+  update{{this.name}}: {{this.name}}SubscriptionPayload!
+  delete{{this.name}}: {{this.name}}SubscriptionPayload!
+  {{/each}}
+}
+
 {{#each types}}
 input Create{{this.name}}Input {
   {{#each this.fields}}
@@ -37,6 +45,14 @@ type {{this.name}} {
   {{#each this.fields}}
   {{this.name}}: {{this.type}}{{#if this.required}}!{{/if}}
   {{/each}}
+}
+
+{{/each}}
+
+{{#each types}}
+type {{this.name}}SubscriptionPayload {
+  type: String!
+  payload: {{this.name}}!
 }
 
 {{/each}}

@@ -1,60 +1,85 @@
 const db = require('./models');
+const pubSub = require('./pubSubHelper');
 
 const resolver = {
     Query: {
         {{#each types}}
-        get{{this.name}}: (_, args) => {
-            return db.{{this.ref}}.findByPk(args.id)
-                .then(data => {
-                    return data.dataValues;
-                })
-                .catch(err => {
-                    throw err;
-                });
+        get{{this.name}}: async (_, args) => {
+            try {
+                const item = await db.{{this.ref}}.findByPk(args.id);
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
         },
-        get{{this.name}}s: (_, args) => {
-            return db.{{this.ref}}.findAll()
-                        .then(items => {
-                            return items.map(item => item.dataValues);
-                        })
-                        .catch(err => {
-                            throw err;
-                        });
+        get{{this.name}}s: async (_, args) => {
+            try {
+                const items = await db.{{this.ref}}.findAll();
+                return items.map(item => item.dataValues);
+            } catch (err) {
+                throw err;
+            }
         },
         {{/each}}
     },
     Mutation: {
         {{#each types}}
-        create{{this.name}}: (_, args) => {
-            return db.{{this.ref}}.create(args.input)
-                .then(data => {
-                    return data.dataValues;
-                })
-                .catch(err => {
-                    throw err;
+        create{{this.name}}: async (_, args) => {
+            try {
+                const type = 'CREATE_{{uppercase this.name}}';
+                const item = await db.{{this.ref}}.create(args.input);
+                await pubSub.publish(type, {
+                    type,
+                    payload: item.dataValues
                 });
-        },
-        update{{this.name}}: (_, args) => {
-            return db.{{this.ref}}.update(args.input, { return: true, where: { id: args.id } })
-                .then(() => {
-                    return db.{{this.ref}}.findByPk(args.id);
-                })
-                .then(data => {
-                    return data.dataValues;
-                })
-                .catch(err => {
-                    throw err;
-                });
-        },
-        delete{{this.name}}: (_, args) => {
-            return db.{{this.ref}}.destroy({
-                where: { id: args.id }
-            }).then(data => {
-                return data > 0;
-            })
-            .catch(err => {
+                return item.dataValues;
+            } catch (err) {
                 throw err;
-            })
+            }
+        },
+        update{{this.name}}: async (_, args) => {
+            try {
+                const type = 'UPDATE_{{uppercase this.name}}';
+                await db.{{this.ref}}.update(args.input, { return: true, where: { id: args.id } });
+                const item = await db.{{this.ref}}.findByPk(args.id);
+                await pubSub.publish(type, {
+                    type,
+                    payload: item.dataValues
+                });
+                return item.dataValues;
+            } catch (err) {
+                throw err;
+            }
+        },
+        delete{{this.name}}: async (_, args) => {
+            try {
+                const type = 'DELETE_{{uppercase this.name}}';
+                const item = await db.{{this.ref}}.findByPk(args.id);
+                const data = await db.{{this.ref}}.destroy({ where: { id: args.id } });
+                await pubSub.publish(type, {
+                    type,
+                    payload: item.dataValues
+                });
+                return data > 0;
+            } catch (err) {
+                throw err;
+            }
+        },
+        {{/each}}
+    },
+    Subscription: {
+        {{#each types}}
+        create{{this.name}}: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('CREATE_{{uppercase this.name}}')
+        },
+        update{{this.name}}: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('UPDATE_{{uppercase this.name}}')
+        },
+        delete{{this.name}}: {
+            resolve: rootValue => rootValue,
+            subscribe: pubSub.subscribe('DELETE_{{uppercase this.name}}')
         },
         {{/each}}
     }
