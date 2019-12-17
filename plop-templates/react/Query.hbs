@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -24,9 +24,9 @@ function {{properCase gql_type}}(props) {
     }
 
     return (
-        <div>
-            <h1>{{{constantCase gql_type}}}</h1>
-        </div>
+        <Fragment>
+            { props.children(data) }
+        </Fragment>
     )
 }
 
